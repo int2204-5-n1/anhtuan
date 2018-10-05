@@ -19,12 +19,23 @@ public class DictionaryCommandline {
         showAllWords();
     }
 
+    void dictionaryAdvanced(){
+        DictionaryManagement advanced = new DictionaryManagement();
+        advanced.insertFromFile();
+        showAllWords();
+        advanced.DictionaryLookup();
+    }
 
-    public static void main(String args[])throws IOException{
+    public static void main(String args[]){
         DictionaryCommandline run = new DictionaryCommandline();
         //run.dictionaryBasic();
-        DictionaryManagement test = new DictionaryManagement();
+        /*DictionaryManagement test = new DictionaryManagement();
+        test.insertFromCommandline();
         test.insertFromFile();
         run.showAllWords();
+        System.out.println(DictionaryManagement.dictsize);*/
+        run.dictionaryAdvanced();
     }
 }
+
+

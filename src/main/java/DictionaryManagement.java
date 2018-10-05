@@ -5,14 +5,14 @@ import java.io.BufferedReader;
 
 public class DictionaryManagement {
     public static Dictionary dict = new Dictionary();
-
+    public static int dictsize=0;
     void insertFromCommandline(){
         try {
             Scanner inp = new Scanner(System.in);
             System.out.println("So luong tu vung: ");
-            int n = inp.nextInt();
+            dictsize = inp.nextInt();
             inp.nextLine();
-            for (int i = 0; i < n; i++) {
+            for (int i = 0; i < dictsize; i++) {
                 String s ;
                 Word word = new Word();
                 System.out.println("Tu moi");
@@ -30,7 +30,7 @@ public class DictionaryManagement {
         }
     }
 
-    void insertFromFile() throws  IOException{
+    void insertFromFile() {
         BufferedReader br = null;
         try{
             br = new BufferedReader(new FileReader("C:\\Users\\OS\\Desktop\\dictionary.txt"));
@@ -41,6 +41,7 @@ public class DictionaryManagement {
                 word.setWord_explain(s.split("\t")[1]);
                 dict.dictionary.add(word);
                 s = br.readLine();
+                dictsize++;
             }
         }
         catch(IOException e){
@@ -56,7 +57,19 @@ public class DictionaryManagement {
     }
 
     void DictionaryLookup(){
-
+        Scanner inp = new Scanner(System.in);
+        String target = new String();
+         {
+            System.out.println("Tra từ: ");
+            target = inp.nextLine();
+            for (Word word : dict.dictionary) {
+                if (word.getWord_target().equalsIgnoreCase(target)) {
+                    System.out.println("Nghia cua tu: " + word.getWord_explain());
+                    return;
+                }
+            }
+        }
+        System.out.println("Not found");
     }
 
 }
