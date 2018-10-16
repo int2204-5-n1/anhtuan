@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="cmudict04">
+    <CLASSES>
+      <root url="jar://F:/New folder/freetts-1.2/lib/cmudict04.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="jar://F:/New folder/freetts-1.2/lib/cmudict04.jar!/" recursive="false" />
+  </library>
+</component>

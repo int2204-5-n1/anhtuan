@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="cmulex">
+    <CLASSES>
+      <root url="jar://F:/New folder/freetts-1.2/lib/cmulex.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="jar://F:/New folder/freetts-1.2/lib/cmulex.jar!/" recursive="false" />
+  </library>
+</component>

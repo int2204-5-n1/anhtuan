@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="cmutimelex">
+    <CLASSES>
+      <root url="jar://F:/New folder/freetts-1.2/lib/cmutimelex.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="jar://F:/New folder/freetts-1.2/lib/cmutimelex.jar!/" recursive="false" />
+  </library>
+</component>

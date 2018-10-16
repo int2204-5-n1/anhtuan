@@ -1,5 +1,3 @@
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,7 +14,14 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.ResourceBundle;
+
+import java.util.Locale;
+import java.util.Set;
+import javax.speech.Central;
+import javax.speech.synthesis.Synthesizer;
+import javax.speech.synthesis.SynthesizerModeDesc;
 
 public class appController implements Initializable {
     Dictionary dict = new Dictionary();
@@ -24,26 +29,26 @@ public class appController implements Initializable {
     @FXML
     private ListView<Word> wordList = new ListView<Word>(dict.dictionary);
     @FXML
-    WebView webView = new WebView();
+    private WebView webView = new WebView();
     @FXML
-    TextField search = new TextField();
+    private TextField search = new TextField();
     @FXML
-    Button searchButton = new Button();
+    private Button searchButton = new Button();
+    static Synthesizer synthesizer;
+    static Set<Synthesizer> loadedSynthesizers = new HashSet<>();
+    WebEngine engine;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
         //TODO: Adding word target to wordList from file
-//        loadData("ev");
         loadData("ev");
-//        DictionaryManagement.insertFromFile();
         wordList.getItems().addAll(dict.dictionary);
-
     }
 
     @FXML
-    public void handle(MouseEvent event) {
-        WebEngine engine = webView.getEngine();
+    public void wordItemClicked(MouseEvent event) {
+        engine = webView.getEngine();
         String s = wordList.getSelectionModel().getSelectedItems().get(0).getWord_explain();
         engine.loadContent(s);
     }
@@ -62,6 +67,40 @@ public class appController implements Initializable {
         searchButton.setFocusTraversable(false);
         String target = search.getText();
         searchWord(target);
+    }
+
+    /**
+     * Code lấy từ bài viết https://www.geeksforgeeks.org/converting-text-speech-java/
+     */
+    @FXML
+    void speak() {
+        try
+        {
+            String s= search.getText();
+            // set property as Kevin Dictionary
+            System.setProperty("freetts.voices",
+                    "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
+            // Register Engine
+            Central.registerEngineCentral("com.sun.speech.freetts.jsapi.FreeTTSEngineCentral");
+            // Create a Synthesizer
+            synthesizer = Central.createSynthesizer(new SynthesizerModeDesc(Locale.US));
+
+            // Allocate synthesizer
+            synthesizer.allocate();
+
+            // Resume Synthesizer
+           synthesizer.resume();
+
+            // speaks the given text until queue is empty.
+            synthesizer.speakPlainText(s, null);
+            synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
+            loadedSynthesizers.add(synthesizer);
+        }
+
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void loadData(String language) {
@@ -118,5 +157,7 @@ public class appController implements Initializable {
         engine.loadContent("Not found.");
 
     }
+
+
 
 }
