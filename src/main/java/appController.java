@@ -4,6 +4,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -26,24 +28,37 @@ import javax.speech.synthesis.SynthesizerModeDesc;
 public class appController implements Initializable {
     Dictionary dict = new Dictionary();
 
-    @FXML
-    private ListView<Word> wordList = new ListView<Word>(dict.dictionary);
-    @FXML
-    private WebView webView = new WebView();
-    @FXML
-    private TextField search = new TextField();
-    @FXML
-    private Button searchButton = new Button();
+    @FXML private ListView<Word> wordList = new ListView<Word>(dict.dictionary);
+    @FXML private WebView webView = new WebView();
+    @FXML private TextField search = new TextField();
+    @FXML private Button searchButton = new Button();
+    @FXML Button speakerButton = new Button();
     static Synthesizer synthesizer;
     static Set<Synthesizer> loadedSynthesizers = new HashSet<>();
     WebEngine engine;
+    private Image searchImage,speakerImage;
+
+    private String word;
+    private int index = -1;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        try {
+            //TODO: Adding word target to wordList from file
+            loadData("ev");
+            wordList.getItems().addAll(dict.dictionary);
 
-        //TODO: Adding word target to wordList from file
-        loadData("ev");
-        wordList.getItems().addAll(dict.dictionary);
+            //Set image for search button
+            searchImage = new Image(getClass().getResourceAsStream("search.png"));
+            searchButton.setGraphic(new ImageView(searchImage));
+
+            //Set image for speaker button
+            speakerImage = new Image(getClass().getResourceAsStream("speaker.png"));
+            speakerButton.setGraphic(new ImageView(speakerImage));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -51,22 +66,43 @@ public class appController implements Initializable {
         engine = webView.getEngine();
         String s = wordList.getSelectionModel().getSelectedItems().get(0).getWord_explain();
         engine.loadContent(s);
+        word = wordList.getSelectionModel().getSelectedItems().get(0).getWord_target();
+        index = wordList.getSelectionModel().getSelectedIndex();
     }
 
     @FXML
-    public void keyhandle(KeyEvent event) {
+    public void searchByTextField(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             WebEngine engine = webView.getEngine();
             engine.loadContent(search.getText());
             searchWord(search.getText());
+            word = search.getText();
         }
     }
 
     @FXML
-    public void startSearch(ActionEvent event) {
+    public void searchByButton(ActionEvent event) {
         searchButton.setFocusTraversable(false);
         String target = search.getText();
         searchWord(target);
+        word = target;
+    }
+
+    @FXML
+    public void deleteWord(ActionEvent event){
+        try{
+            if(index >=0 ) {
+                String s = dict.dictionary.get(index).getWord_target();
+                dict.dictionary.remove(index);
+                System.out.println("Successfully delete "+ s);
+            }
+            else{
+                ///TODO: popup: ko co tu de xoa
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -76,7 +112,6 @@ public class appController implements Initializable {
     void speak() {
         try
         {
-            String s= search.getText();
             // set property as Kevin Dictionary
             System.setProperty("freetts.voices",
                     "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
@@ -92,7 +127,7 @@ public class appController implements Initializable {
            synthesizer.resume();
 
             // speaks the given text until queue is empty.
-            synthesizer.speakPlainText(s, null);
+            synthesizer.speakPlainText(word, null);
             synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
             loadedSynthesizers.add(synthesizer);
         }
@@ -145,6 +180,7 @@ public class appController implements Initializable {
             if(dict.dictionary.get(mid).getWord_target().equalsIgnoreCase(target)){
                 String s = dict.dictionary.get(mid).getWord_explain();
                 engine.loadContent(s);
+                index = mid;
                 return;
             }
             if(dict.dictionary.get(mid).getWord_target().compareToIgnoreCase(target) > 0){
@@ -155,7 +191,6 @@ public class appController implements Initializable {
             }
         }
         engine.loadContent("Not found.");
-
     }
 
 
