@@ -176,12 +176,10 @@ public class DictionaryManagement {
         BufferedWriter bw = null;
         FileWriter fw = null;
         try{
-            fw = new FileWriter("C:\\Users\\OS\\Desktop\\dictionary.txt");
+            fw = new FileWriter("C:\\Users\\OS\\Desktop\\abcde.txt");
             bw = new BufferedWriter(fw);
-            bw.write("dictionary");
-            bw.newLine();
             for(Word word: dict.dictionary){
-                bw.write(word.getWord_target()+"\t"+word.getWord_explain());
+                bw.write("abcd");
                 bw.newLine();
             }
             System.out.println("Successfully exported.");

@@ -1,9 +1,10 @@
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -11,16 +12,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.ResourceBundle;
+import java.util.*;
 
-import java.util.Locale;
-import java.util.Set;
 import javax.speech.Central;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
@@ -33,6 +33,9 @@ public class appController implements Initializable {
     @FXML private TextField search = new TextField();
     @FXML private Button searchButton = new Button();
     @FXML Button speakerButton = new Button();
+    @FXML Label label = new Label();
+    @FXML Button deleteButton = new Button(), addButton = new Button();
+
     static Synthesizer synthesizer;
     static Set<Synthesizer> loadedSynthesizers = new HashSet<>();
     WebEngine engine;
@@ -47,7 +50,6 @@ public class appController implements Initializable {
             //TODO: Adding word target to wordList from file
             loadData("ev");
             wordList.getItems().addAll(dict.dictionary);
-
             //Set image for search button
             searchImage = new Image(getClass().getResourceAsStream("search.png"));
             searchButton.setGraphic(new ImageView(searchImage));
@@ -89,22 +91,44 @@ public class appController implements Initializable {
     }
 
     @FXML
-    public void deleteWord(ActionEvent event){
-        try{
-            if(index >=0 ) {
-                String s = dict.dictionary.get(index).getWord_target();
-                dict.dictionary.remove(index);
-                System.out.println("Successfully delete "+ s);
+    public void deleteConfirmation(ActionEvent event){
+        try {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setContentText("Xóa từ: " + word + ".Khởi động lại từ điển để lưu thay đổi.");
+            alert.setHeaderText("Xóa từ sẽ làm thay đổi dữ liệu từ điển vĩnh viễn. Bạn có chắc muốn xóa từ: " + word + "?");
+            alert.setTitle("Delete alert.");
+
+            Optional<ButtonType> option = alert.showAndWait();
+            if (ButtonType.OK == option.get()) {
+                deleteWord();
+                this.label.setText("Đã xóa " + word);
+            } else if (option.get() == ButtonType.CANCEL) {
+                this.label.setText("Hủy xóa từ.");
             }
-            else{
-                ///TODO: popup: ko co tu de xoa
-            }
-        }
-        catch (Exception e){
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
 
+    @FXML
+    public void addConfirmation(ActionEvent event){
+        try {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setContentText("Thêm từ. Khởi động lại từ điển để lưu thay đổi.");
+            alert.setHeaderText("Thêm từ sẽ làm thay đổi dữ liệu từ điển vĩnh viễn. Bạn có chắc muốn thêm từ?");
+            alert.setTitle("Add alert.");
+
+            Optional<ButtonType> option = alert.showAndWait();
+            if (ButtonType.OK == option.get()) {
+                //TODO: cửa sổ thêm từ
+                addWordWindow();
+            } else if (option.get() == ButtonType.CANCEL) {
+                this.label.setText("Hủy thêm từ.");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     /**
      * Code lấy từ bài viết https://www.geeksforgeeks.org/converting-text-speech-java/
      */
@@ -138,7 +162,7 @@ public class appController implements Initializable {
         }
     }
 
-    public void loadData(String language) {
+    void loadData(String language) {
         DictionaryManagement.dictsize = 0;
         BufferedReader br = null;
         try {
@@ -148,7 +172,6 @@ public class appController implements Initializable {
             if (language.equalsIgnoreCase("custom")) {
                 br = new BufferedReader(new FileReader("C:\\Users\\OS\\Desktop\\dictionary.txt"));
             }
-            br.readLine();
             String s = br.readLine();
             while (s != null) {
                 Word word = new Word();
@@ -193,6 +216,30 @@ public class appController implements Initializable {
         engine.loadContent("Not found.");
     }
 
+    private void deleteWord(){
+        try {
+            wordList.getItems().remove(index);
+            dict.dictionary.remove(index);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
+    void addWord(Word word){
+        dict.dictionary.add(word);
+        dict.dictionary.sorted();
+        wordList.getItems().add(word);
+        wordList.getItems().sorted();
+    }
+
+    void addWordWindow() throws IOException {
+        Stage stage = new Stage();
+        Parent root = FXMLLoader.load(getClass().getResource("addwindow.fxml"));
+        stage.setScene(new Scene(root));
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(addButton.getScene().getWindow());
+        stage.showAndWait();
+    }
 
 }

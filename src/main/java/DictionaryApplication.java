@@ -24,6 +24,7 @@ public class DictionaryApplication extends Application{
     }
     @Override
     public void stop()throws Exception{
+        //Closing synthesizer for speaker
         for (Synthesizer synthesizer: appController.loadedSynthesizers ) {
             try {
                 synthesizer.deallocate();
@@ -32,6 +33,11 @@ public class DictionaryApplication extends Application{
                 ee.printStackTrace();
             }
         }
+
+//        //Luu thay doi ra file
+//        DictionaryManagement mng = new DictionaryManagement();
+//        mng.dictionaryExportToFile();
+
     }
     Parent root = FXMLLoader.load(getClass().getResource("app.fxml"));
     Scene scene = new Scene(root,600,600);
