@@ -22,14 +22,18 @@ public class addWindowController implements Initializable {
     @FXML ChoiceBox<String> b1,b2,b3,b4,b5,b6,b7,b8;
     @FXML TextArea f1,f2,f3,f4,f5,f6,f7,f8;
     @FXML Button a1,a2,a3,a4,a5,a6,a7,a8;
-    int i = 0;
+    int numberofdefinition = 0;
     ObservableList<Button> adds = FXCollections.observableArrayList();
     ObservableList<TextArea> fields = FXCollections.observableArrayList();
     ObservableList<ChoiceBox> boxes = FXCollections.observableArrayList();
     ObservableList<Label> defs = FXCollections.observableArrayList();
 
     @FXML public void more(){
-
+        adds.get(numberofdefinition).setVisible(true);
+        fields.get(numberofdefinition).setVisible(true);
+        boxes.get(numberofdefinition).setVisible(true);
+        defs.get(numberofdefinition).setVisible(true);
+        numberofdefinition++;
     }
 
     @Override
