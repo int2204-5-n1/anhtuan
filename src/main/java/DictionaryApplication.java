@@ -20,7 +20,6 @@ public class DictionaryApplication extends Application{
         primaryStage.setMinWidth(300);
 //        primaryStage.setMaxHeight(470);
         primaryStage.show();
-        System.out.println(root);
     }
     @Override
     public void stop()throws Exception{

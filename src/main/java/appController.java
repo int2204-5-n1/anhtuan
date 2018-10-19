@@ -237,6 +237,7 @@ public class appController implements Initializable {
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("addwindow.fxml"));
         stage.setScene(new Scene(root));
+        stage.setTitle("Thêm từ");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initOwner(addButton.getScene().getWindow());
         stage.showAndWait();
