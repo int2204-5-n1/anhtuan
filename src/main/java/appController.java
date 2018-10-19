@@ -235,7 +235,7 @@ public class appController implements Initializable {
 
     void addWordWindow() throws IOException {
         Stage stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("addwindow.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("test.fxml"));
         stage.setScene(new Scene(root));
         stage.setTitle("Thêm từ");
         stage.initModality(Modality.APPLICATION_MODAL);

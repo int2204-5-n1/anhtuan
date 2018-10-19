@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="test">
+   <children>
+      <GridPane fx:id="grid" alignment="CENTER" hgap="5.0" layoutX="92.0" layoutY="48.0" prefHeight="58.0" prefWidth="467.0" vgap="5.0" AnchorPane.leftAnchor="92.0" AnchorPane.rightAnchor="41.0" AnchorPane.topAnchor="48.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="31.0" minWidth="10.0" prefWidth="31.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="70.0" minWidth="10.0" prefWidth="70.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="357.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="40.0" minHeight="35.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="40.0" minHeight="35.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label contentDisplay="CENTER" text="Loai tu" GridPane.columnIndex="1" />
+            <Label text="Giai nghia" GridPane.columnIndex="2" />
+            <Label prefHeight="17.0" prefWidth="31.0" text="DN1" GridPane.rowIndex="1" />
+            <ChoiceBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
+      <TextField layoutX="92.0" layoutY="14.0" prefHeight="25.0" prefWidth="467.0" />
+      <Label layoutX="39.0" layoutY="18.0" text="Them tu:" />
+      <Button layoutX="13.0" layoutY="52.0" mnemonicParsing="false" onAction="#more" prefHeight="25.0" prefWidth="47.0" text="More" />
+   </children>
+</AnchorPane>
