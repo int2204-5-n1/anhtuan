@@ -83,16 +83,6 @@ public class DictionaryCommandline {
         System.out.println("-end: Exit.");
     }
 
-    public static void main(String args[]){
-        DictionaryCommandline ctrl = new DictionaryCommandline();
-        DictionaryManagement mng = new DictionaryManagement();
-//            for (String arg : args) {
-//                if (arg.equals("-basic"))
-//                    ctrl.dictionaryBasic();
-//                else if (arg.equals("-advance"))
-        ctrl.dictionaryAdvanced();
-    }
-//        }
 }
 
 

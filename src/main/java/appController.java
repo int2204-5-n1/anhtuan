@@ -15,6 +15,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -65,6 +66,13 @@ public class appController implements Initializable {
             //Set image for speaker button
             speakerImage = new Image(getClass().getResourceAsStream("speaker.png"));
             speakerButton.setGraphic(new ImageView(speakerImage));
+
+            //Auto complete textfield
+            ArrayList<String> possibleSearches = new ArrayList<>();
+            for (Word word:dict.dictionary){
+                possibleSearches.add(word.getWord_target());
+            }
+            TextFields.bindAutoCompletion(search,possibleSearches );
         }
         catch (Exception e){
             e.printStackTrace();
