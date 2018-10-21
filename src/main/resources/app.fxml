@@ -19,11 +19,12 @@
             <TextField fx:id="search" layoutX="63.0" layoutY="77.0" onKeyPressed="#searchByTextField" prefHeight="25.0" prefWidth="95.0" />
             <Button fx:id="searchButton" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="156.0" layoutY="76.0" mnemonicParsing="false" onAction="#searchByButton" prefHeight="27.0" prefWidth="29.0" />
             <Button fx:id="speakerButton" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" layoutX="549.0" layoutY="107.0" mnemonicParsing="false" onMouseClicked="#speak" prefHeight="35.0" prefWidth="37.0" AnchorPane.rightAnchor="14.0" />
-            <HBox alignment="CENTER" layoutX="300.0" layoutY="76.0" prefHeight="27.0" prefWidth="271.0" spacing="20.0" AnchorPane.leftAnchor="300.0">
+            <HBox layoutX="252.0" layoutY="76.0" prefHeight="27.0" prefWidth="344.0" spacing="20.0" AnchorPane.leftAnchor="252.0">
                <children>
-                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteConfirmation" prefHeight="27.0" prefWidth="51.0" text="Xóa từ" />
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteConfirmation" prefHeight="27.0" prefWidth="60.0" text="Xóa từ" />
                   <Button fx:id="addButton" mnemonicParsing="false" onAction="#add" prefHeight="27.0" prefWidth="67.0" text="Thêm từ" />
-                  <Button mnemonicParsing="false" onAction="#edit" prefHeight="27.0" prefWidth="70.0" text="Chỉnh sửa" />
+                  <Button mnemonicParsing="false" onAction="#edit" prefHeight="27.0" prefWidth="75.0" text="Chỉnh sửa" />
+                  <Button mnemonicParsing="false" onAction="#stringTranslate" prefHeight="25.0" prefWidth="105.0" text="Dịch đoạn văn" />
                </children>
             </HBox>
             <Label fx:id="label" layoutX="300.0" layoutY="59.0" prefHeight="17.0" prefWidth="195.0" textFill="BLUE" />

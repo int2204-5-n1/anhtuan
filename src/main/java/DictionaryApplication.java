@@ -21,6 +21,7 @@ public class DictionaryApplication extends Application{
 //        primaryStage.setMaxHeight(470);
         primaryStage.show();
     }
+
     @Override
     public void stop()throws Exception{
         //Closing synthesizer for speaker
@@ -32,6 +33,8 @@ public class DictionaryApplication extends Application{
                 ee.printStackTrace();
             }
         }
+        appController appController = new appController();
+        appController.writeFile("C:\\Users\\OS\\Desktop\\dictionary.txt");
 
 //        //Luu thay doi ra file
 //        DictionaryManagement mng = new DictionaryManagement();

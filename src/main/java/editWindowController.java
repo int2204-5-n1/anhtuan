@@ -39,7 +39,7 @@ public class editWindowController implements Initializable {
     public void editConfirmation(javafx.event.ActionEvent event) {
         try{
             Stage stage = (Stage) root.getScene().getWindow();
-            getappController();
+//            getappController();
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setContentText("Sửa từ");
             alert.setHeaderText("Sửa từ sẽ làm thay đổi dữ liệu từ điển vĩnh viễn. Bạn có chắc muốn sửa từ?");
@@ -48,21 +48,16 @@ public class editWindowController implements Initializable {
             Optional<ButtonType> option = alert.showAndWait();
             if(option.isPresent()) {
                 if (ButtonType.OK == option.get()) {
-                    stage.close();
-                } else if (option.get() == ButtonType.CANCEL) {
-                    appController.label.setText("Hủy sửa từ.");
-                }
-            }else{
-                appController.label.setText("Sửa từ thất bại.");
-            }
-            stage.setOnHiding(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent event) {
                     editedWord.setWord_target(word);
                     String s = htmlEditor.getHtmlText();
                     editedWord.setWord_explain(s);
+                    stage.close();
+                } else if (option.get() == ButtonType.CANCEL) {
+//                    appController.label.setText("Hủy sửa từ.");
                 }
-            });
+            }else{
+//                appController.label.setText("Sửa từ thất bại.");
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

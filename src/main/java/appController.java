@@ -17,10 +17,9 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.textfield.TextFields;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +29,7 @@ import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 
 public class appController implements Initializable {
-    Dictionary dict = new Dictionary();
+    static Dictionary dict = new Dictionary();
 
     /**
      * Dictionary application nodes
@@ -47,6 +46,8 @@ public class appController implements Initializable {
     static Set<Synthesizer> loadedSynthesizers = new HashSet<>();
     WebEngine engine;
     private Image searchImage,speakerImage;
+    ArrayList<String> possibleSearches;
+    String filePath = "";
 
     private String word="";
     public int index = -1;
@@ -57,7 +58,7 @@ public class appController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         try {
             //TODO: Adding word target to wordList from file
-            loadData("ev");
+            loadData("custom");
             wordList.getItems().addAll(dict.dictionary);
             //Set image for search button
             searchImage = new Image(getClass().getResourceAsStream("search.png"));
@@ -68,7 +69,7 @@ public class appController implements Initializable {
             speakerButton.setGraphic(new ImageView(speakerImage));
 
             //Auto complete textfield
-            ArrayList<String> possibleSearches = new ArrayList<>();
+            possibleSearches = new ArrayList<>();
             for (Word word:dict.dictionary){
                 possibleSearches.add(word.getWord_target());
             }
@@ -175,22 +176,37 @@ public class appController implements Initializable {
             e.printStackTrace();
         }
     }
+    @FXML
+    void stringTranslate(){
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("translateString.fxml"));
+        try{
+            loader.load();
+        }catch (IOException e){
+            Logger.getLogger(appController.class.getName()).log(Level.SEVERE,null,e);
+        }
+        Parent root = loader.getRoot();
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
 
     void loadData(String language) {
         DictionaryManagement.dictsize = 0;
         BufferedReader br = null;
         try {
             if (language.equalsIgnoreCase("ev")) {
-                br = new BufferedReader(new FileReader("C:\\Users\\OS\\Desktop\\E_V.txt"));
+                filePath = "C:\\Users\\OS\\Desktop\\E_V.txt";
             }
             if (language.equalsIgnoreCase("custom")) {
-                br = new BufferedReader(new FileReader("C:\\Users\\OS\\Desktop\\dictionary.txt"));
+                filePath = "C:\\Users\\OS\\Desktop\\dictionary.txt";
             }
+            br = new BufferedReader(new FileReader(filePath));
             String s = br.readLine();
             while (s != null) {
                 Word word1 = new Word();
-                word1.setWord_target(s.split("<html>")[0]);
-                word1.setWord_explain("<html>" + s.split("<html>")[1]);
+                word1.setWord_target(s.split("<html")[0]);
+                word1.setWord_explain("<html" + s.split("<html")[1]);
                 dict.dictionary.add(word1);
                 s = br.readLine();
                 DictionaryManagement.dictsize++;
@@ -210,7 +226,7 @@ public class appController implements Initializable {
     //Binary search
     boolean searchWord(String target) {
         WebEngine engine = webView.getEngine();
-        int n = DictionaryManagement.dictsize;
+        int n = dict.dictionary.size();
         int left = 0, right = n-1;
         while(left <=right){
             int mid = (left + right) / 2;
@@ -251,6 +267,7 @@ public class appController implements Initializable {
        }
        addWindowController addWindowController = loader.getController();
        addWindowController.getDict(dict);
+       addWindowController.generated = true;
        Parent root = loader.getRoot();
        Stage stage = new Stage();
        stage.setScene(new Scene(root));
@@ -263,13 +280,15 @@ public class appController implements Initializable {
                    label.setText("Hủy thêm từ");
                }
                else if(addWindowController.replaced){
-                   wordList.getItems().set(addWindowController.word_index, addWindowController.addedWord);
+                   wordList.getItems().set(addWindowController.word_index,addWindowController.addedWord);
                    dict.dictionary.set(addWindowController.word_index, addWindowController.addedWord);
                    label.setText("Đã thay thế "+ addWindowController.addedWord.getWord_target());
                }else{
                    wordList.getItems().add(addWindowController.word_index, addWindowController.addedWord);
-                   dict.dictionary.set(addWindowController.word_index, addWindowController.addedWord);
+                   dict.dictionary.add(addWindowController.word_index, addWindowController.addedWord);
                    label.setText("Đã thêm "+ addWindowController.addedWord.getWord_target());
+                   possibleSearches.add(addWindowController.addedWord.getWord_target());
+                   TextFields.bindAutoCompletion(search,possibleSearches );
                }
            }
        });
@@ -289,7 +308,7 @@ public class appController implements Initializable {
             editWindowController.htmlEditor.setHtmlText(dict.dictionary.get(index).getWord_explain());
             editWindowController.editedWord.setWord_target(word);
             editWindowController.editedWord.setWord_explain(dict.dictionary.get(index).getWord_explain());
-            editWindowController.getTarget(dict.dictionary.get(index).getWord_target());
+            editWindowController.getTarget(word);
         }else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Chưa có từ được chọn.");
@@ -310,8 +329,23 @@ public class appController implements Initializable {
                 wordList.getItems().set(index, editWindowController.editedWord);
                 dict.dictionary.set(index, editWindowController.editedWord);
                 label.setText("Đã sửa từ: "+editWindowController.editedWord.getWord_target());
+//                System.out.println(editWindowController.editedWord.getWord_explain());
             }
         });
     }
+
+    public  void writeFile(String filePath) throws IOException {
+        FileOutputStream fo = new FileOutputStream(filePath,false);
+        OutputStreamWriter streamWriter = new OutputStreamWriter(fo, StandardCharsets.UTF_8);
+        for(Word word:wordList.getItems()){
+            StringBuilder s = new StringBuilder();
+            s.append(word.getWord_target()).append(word.getWord_explain());
+            streamWriter.write(s.toString());
+            streamWriter.write(System.getProperty("line.separator"));
+        }
+        streamWriter.flush();
+        fo.close();
+    }
+
 
 }

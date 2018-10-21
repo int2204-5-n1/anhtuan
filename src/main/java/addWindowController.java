@@ -24,6 +24,7 @@ public class addWindowController implements Initializable {
     String word;
     int word_index;
     Boolean replaced = null;
+    boolean generated = false;
     Word addedWord = new Word();
     @FXML Button addConfirmButton = new Button();
     @FXML HTMLEditor htmlEditor = new HTMLEditor();
@@ -39,7 +40,7 @@ public class addWindowController implements Initializable {
     public void addConfirmation(javafx.event.ActionEvent event) {
         try{
             Stage stage = (Stage) root.getScene().getWindow();
-            getappController();
+//            getappController();
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setContentText("Thêm từ");
             alert.setHeaderText("Thêm từ sẽ làm thay đổi dữ liệu từ điển vĩnh viễn. Bạn có chắc muốn thêm từ?");
@@ -52,6 +53,7 @@ public class addWindowController implements Initializable {
                     addedWord.setWord_target(field.getText());
                     String s = htmlEditor.getHtmlText();
                     addedWord.setWord_explain(s);
+                    System.out.println(s);
 
                     if(word.equals("")){
                         Alert alert1 = new Alert(Alert.AlertType.ERROR);
@@ -62,9 +64,9 @@ public class addWindowController implements Initializable {
                     }
                     else{
                         if(searchWord(word)){
-                           Alert alert1 = new Alert(Alert.AlertType.CONFIRMATION);
-                           alert1.setContentText("Từ đã tồn tại");
-                           alert1.setHeaderText("Từ đã tồn tại. Chọn OK để thay thế từ có sẵn.");
+                            Alert alert1 = new Alert(Alert.AlertType.CONFIRMATION);
+                            alert1.setContentText("Từ đã tồn tại");
+                            alert1.setHeaderText("Từ đã tồn tại. Chọn OK để thay thế từ có sẵn.");
                             Optional<ButtonType> optionex = alert1.showAndWait();
                             if(optionex.get() == ButtonType.OK){
                                 //TODO: return chen/thay the, index
@@ -81,10 +83,10 @@ public class addWindowController implements Initializable {
 
 
                 } else if (option.get() == ButtonType.CANCEL) {
-                    appController.label.setText("Hủy thêm từ.");
+//                    appController.label.setText("Hủy thêm từ.");
                 }
             }else{
-                appController.label.setText("Thêm từ thất bại.");
+//                appController.label.setText("Thêm từ thất bại.");
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -92,11 +94,12 @@ public class addWindowController implements Initializable {
     }
 
     public void getDict(Dictionary dictionary){
-        this.dict = dictionary;
+        if(!generated)
+            this.dict.dictionary.addAll(dictionary.dictionary);
     }
 
     public boolean searchWord(String target){
-        int n = DictionaryManagement.dictsize;
+        int n = dict.dictionary.size();
         int left = 0, right = n-1;
         while(left <=right){
             int mid = (left + right) / 2;
