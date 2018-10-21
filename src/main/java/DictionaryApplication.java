@@ -3,6 +3,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import javax.speech.EngineException;
@@ -10,12 +11,22 @@ import javax.speech.synthesis.Synthesizer;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DictionaryApplication extends Application{
     public DictionaryApplication() throws IOException {
     }
     @Override
     public void start(Stage primaryStage) {
+//        FXMLLoader loader = new FXMLLoader();
+//        loader.setLocation(getClass().getResource("DictionaryAddress.fxml"));
+//        try{
+//            loader.load();
+//        }catch (IOException e){
+//            Logger.getLogger(appController.class.getName()).log(Level.SEVERE,null,e);
+//        }
+//
         primaryStage.setTitle("Dictionary");
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(300);
@@ -34,10 +45,8 @@ public class DictionaryApplication extends Application{
                 ee.printStackTrace();
             }
         }
-        appController appController = new appController();
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("E_V.txt").getFile());
-        appController.writeFile(file.getPath());
+        appController controller= new appController();
+        controller.writeFile(appController.filepath);
 
 //        //Luu thay doi ra file
 //        DictionaryManagement mng = new DictionaryManagement();

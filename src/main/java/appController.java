@@ -47,8 +47,7 @@ public class appController implements Initializable {
     WebEngine engine;
     private Image searchImage,speakerImage;
     ArrayList<String> possibleSearches;
-    String filePath ;
-    File file;
+    public static String filepath = "C:\\Users\\OS\\Documents\\E_V.txt";
 
     private String word="";
     public int index = -1;
@@ -59,7 +58,7 @@ public class appController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         try {
             //TODO: Adding word target to wordList from file
-            loadData("default");
+            loadData();
             wordList.getItems().addAll(dict.dictionary);
             //Set image for search button
             searchImage = new Image(getClass().getResourceAsStream("search.png"));
@@ -192,19 +191,15 @@ public class appController implements Initializable {
         stage.show();
     }
 
-    void loadData(String language) {
+    void loadData() {
         DictionaryManagement.dictsize = 0;
-        ClassLoader classLoader = getClass().getClassLoader();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream is = null;
         BufferedReader br = null;
         try {
-            if (language.equalsIgnoreCase("ev")) {
-                file = new File(classLoader.getResource("E_V.txt").getFile());
-            }
-            if (language.equalsIgnoreCase("default")) {
-                file = new File(classLoader.getResource("dictionary.txt").getFile());
-            }
-
-            br = new BufferedReader(new FileReader(file));
+            File fileDir = new File(filepath);
+            br = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(fileDir), "UTF8"));
             String s = br.readLine();
             while (s != null) {
                 Word word1 = new Word();
