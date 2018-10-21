@@ -48,7 +48,6 @@ public class appController implements Initializable {
     private Image searchImage,speakerImage;
     ArrayList<String> possibleSearches;
     public static String filepath = "C:\\Users\\OS\\Documents\\E_V.txt";
-
     private String word="";
     public int index = -1;
 
@@ -200,6 +199,7 @@ public class appController implements Initializable {
             File fileDir = new File(filepath);
             br = new BufferedReader(new InputStreamReader(
                     new FileInputStream(fileDir), "UTF8"));
+            filepath = br.readLine();
             String s = br.readLine();
             while (s != null) {
                 Word word1 = new Word();
@@ -209,6 +209,7 @@ public class appController implements Initializable {
                 s = br.readLine();
                 DictionaryManagement.dictsize++;
             }
+            System.out.println(filepath);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -335,6 +336,8 @@ public class appController implements Initializable {
     public  void writeFile(String filePath) throws IOException {
         FileOutputStream fo = new FileOutputStream(filePath,false);
         OutputStreamWriter streamWriter = new OutputStreamWriter(fo, StandardCharsets.UTF_8);
+        streamWriter.write(filepath);
+        streamWriter.write(System.getProperty("line.separator"));
         for(Word word:wordList.getItems()){
             StringBuilder s = new StringBuilder();
             s.append(word.getWord_target()).append(word.getWord_explain());
@@ -344,6 +347,5 @@ public class appController implements Initializable {
         streamWriter.flush();
         fo.close();
     }
-
 
 }

@@ -15,18 +15,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DictionaryApplication extends Application{
+    Parent root = FXMLLoader.load(getClass().getResource("app.fxml"));
+    Scene scene = new Scene(root,600,600);
     public DictionaryApplication() throws IOException {
     }
     @Override
     public void start(Stage primaryStage) {
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getResource("DictionaryAddress.fxml"));
-//        try{
-//            loader.load();
-//        }catch (IOException e){
-//            Logger.getLogger(appController.class.getName()).log(Level.SEVERE,null,e);
-//        }
-//
         primaryStage.setTitle("Dictionary");
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(300);
@@ -53,8 +47,6 @@ public class DictionaryApplication extends Application{
 //        mng.dictionaryExportToFile();
 
     }
-    Parent root = FXMLLoader.load(getClass().getResource("app.fxml"));
-    Scene scene = new Scene(root,600,600);
 
 
     public static void main(String[] args) {
