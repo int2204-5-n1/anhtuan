@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 
 import javax.speech.EngineException;
 import javax.speech.synthesis.Synthesizer;
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -34,7 +35,9 @@ public class DictionaryApplication extends Application{
             }
         }
         appController appController = new appController();
-        appController.writeFile("C:\\Users\\OS\\Desktop\\dictionary.txt");
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("E_V.txt").getFile());
+        appController.writeFile(file.getPath());
 
 //        //Luu thay doi ra file
 //        DictionaryManagement mng = new DictionaryManagement();

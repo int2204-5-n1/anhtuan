@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -28,6 +30,21 @@
                </children>
             </HBox>
             <Label fx:id="label" layoutX="300.0" layoutY="59.0" prefHeight="17.0" prefWidth="195.0" textFill="BLUE" />
+            <ImageView fitHeight="61.0" fitWidth="102.0" layoutX="373.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="125.0" AnchorPane.topAnchor="14.0">
+               <image>
+                  <Image url="@britain.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="57.0" fitWidth="92.0" layoutX="495.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="16.576919555664062" AnchorPane.topAnchor="14.0">
+               <image>
+                  <Image url="@vietnam.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="67.0" fitWidth="348.0" layoutX="12.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="8.0">
+               <image>
+                  <Image url="@44597674_275491066632964_8465821453168672768_n.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
    </center>
