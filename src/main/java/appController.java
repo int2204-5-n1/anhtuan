@@ -1,4 +1,5 @@
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,14 +13,16 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.speech.Central;
 import javax.speech.synthesis.Synthesizer;
@@ -28,21 +31,26 @@ import javax.speech.synthesis.SynthesizerModeDesc;
 public class appController implements Initializable {
     Dictionary dict = new Dictionary();
 
-    @FXML private ListView<Word> wordList = new ListView<Word>(dict.dictionary);
-    @FXML private WebView webView = new WebView();
+    /**
+     * Dictionary application nodes
+     */
+    @FXML ListView<Word> wordList = new ListView<Word>(dict.dictionary);
+    @FXML public  WebView webView = new WebView();
     @FXML private TextField search = new TextField();
     @FXML private Button searchButton = new Button();
     @FXML Button speakerButton = new Button();
-    @FXML Label label = new Label();
+    @FXML  Label label = new Label();
     @FXML Button deleteButton = new Button(), addButton = new Button();
 
-    static Synthesizer synthesizer;
+    private static Synthesizer synthesizer;
     static Set<Synthesizer> loadedSynthesizers = new HashSet<>();
     WebEngine engine;
     private Image searchImage,speakerImage;
 
-    private String word;
-    private int index = -1;
+    private String word="";
+    public int index = -1;
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -111,20 +119,18 @@ public class appController implements Initializable {
     }
 
     @FXML
-    public void addConfirmation(ActionEvent event){
+    public void add(ActionEvent event){
         try {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setContentText("Thêm từ. Khởi động lại từ điển để lưu thay đổi.");
-            alert.setHeaderText("Thêm từ sẽ làm thay đổi dữ liệu từ điển vĩnh viễn. Bạn có chắc muốn thêm từ?");
-            alert.setTitle("Add alert.");
+            addWordWindow();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
-            Optional<ButtonType> option = alert.showAndWait();
-            if (ButtonType.OK == option.get()) {
-                //TODO: cửa sổ thêm từ
-                addWordWindow();
-            } else if (option.get() == ButtonType.CANCEL) {
-                this.label.setText("Hủy thêm từ.");
-            }
+    @FXML
+    public void edit(ActionEvent event){
+        try{
+            editWordWindow();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -174,10 +180,10 @@ public class appController implements Initializable {
             }
             String s = br.readLine();
             while (s != null) {
-                Word word = new Word();
-                word.setWord_target(s.split("<html>")[0]);
-                word.setWord_explain("<html>" + s.split("<html>")[1]);
-                dict.dictionary.add(word);
+                Word word1 = new Word();
+                word1.setWord_target(s.split("<html>")[0]);
+                word1.setWord_explain("<html>" + s.split("<html>")[1]);
+                dict.dictionary.add(word1);
                 s = br.readLine();
                 DictionaryManagement.dictsize++;
             }
@@ -194,7 +200,7 @@ public class appController implements Initializable {
     }
 
     //Binary search
-    public void searchWord(String target) {
+    boolean searchWord(String target) {
         WebEngine engine = webView.getEngine();
         int n = DictionaryManagement.dictsize;
         int left = 0, right = n-1;
@@ -204,7 +210,7 @@ public class appController implements Initializable {
                 String s = dict.dictionary.get(mid).getWord_explain();
                 engine.loadContent(s);
                 index = mid;
-                return;
+                return true;
             }
             if(dict.dictionary.get(mid).getWord_target().compareToIgnoreCase(target) > 0){
                 right = mid -1;
@@ -213,7 +219,8 @@ public class appController implements Initializable {
                 left = mid + 1;
             }
         }
-        engine.loadContent("Not found.");
+        engine.loadContent("<font color='#cc0000'><b>Not found.</b></font>");
+        return false;
     }
 
     private void deleteWord(){
@@ -226,21 +233,77 @@ public class appController implements Initializable {
         }
     }
 
-    void addWord(Word word){
-        dict.dictionary.add(word);
-        dict.dictionary.sorted();
-        wordList.getItems().add(word);
-        wordList.getItems().sorted();
+    void addWordWindow(){
+       FXMLLoader loader = new FXMLLoader();
+       loader.setLocation(getClass().getResource("addwindow.fxml"));
+       try{
+           loader.load();
+       }catch (IOException e){
+           Logger.getLogger(appController.class.getName()).log(Level.SEVERE,null,e);
+       }
+       addWindowController addWindowController = loader.getController();
+       addWindowController.getDict(dict);
+       Parent root = loader.getRoot();
+       Stage stage = new Stage();
+       stage.setScene(new Scene(root));
+       stage.show();
+       stage.setOnHiding(new EventHandler< WindowEvent>(){
+           @Override
+           public void handle(WindowEvent event){
+               //TODO: Apply thay doi len wordList
+               if(addWindowController.replaced== null){
+                   label.setText("Hủy thêm từ");
+               }
+               else if(addWindowController.replaced){
+                   wordList.getItems().set(addWindowController.word_index, addWindowController.addedWord);
+                   dict.dictionary.set(addWindowController.word_index, addWindowController.addedWord);
+                   label.setText("Đã thay thế "+ addWindowController.addedWord.getWord_target());
+               }else{
+                   wordList.getItems().add(addWindowController.word_index, addWindowController.addedWord);
+                   dict.dictionary.set(addWindowController.word_index, addWindowController.addedWord);
+                   label.setText("Đã thêm "+ addWindowController.addedWord.getWord_target());
+               }
+           }
+       });
     }
 
-    void addWordWindow() throws IOException {
+    void editWordWindow(){
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("editwindow.fxml"));
+        try{
+            loader.load();
+        }catch (IOException e){
+            Logger.getLogger(appController.class.getName()).log(Level.SEVERE,null,e);
+        }
+        editWindowController editWindowController = loader.getController();
+        if(!word.equals("")) {
+            editWindowController.label.setText(word);
+            editWindowController.htmlEditor.setHtmlText(dict.dictionary.get(index).getWord_explain());
+            editWindowController.editedWord.setWord_target(word);
+            editWindowController.editedWord.setWord_explain(dict.dictionary.get(index).getWord_explain());
+            editWindowController.getTarget(dict.dictionary.get(index).getWord_target());
+        }else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Chưa có từ được chọn.");
+            alert.setContentText("Không thể sửa từ.");
+            alert.showAndWait();
+            label.setText("Sửa từ thất bại");
+            return;
+        }
+
+        Parent root = loader.getRoot();
         Stage stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("test.fxml"));
         stage.setScene(new Scene(root));
-        stage.setTitle("Thêm từ");
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.initOwner(addButton.getScene().getWindow());
-        stage.showAndWait();
+        stage.show();
+        stage.setOnHiding(new EventHandler< WindowEvent>(){
+            @Override
+            public void handle(WindowEvent event) {
+                //TODO: Apply thay doi len wordList
+                wordList.getItems().set(index, editWindowController.editedWord);
+                dict.dictionary.set(index, editWindowController.editedWord);
+                label.setText("Đã sửa từ: "+editWindowController.editedWord.getWord_target());
+            }
+        });
     }
 
 }
