@@ -1,3 +1,6 @@
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -6,6 +9,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -15,8 +21,13 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import org.controlsfx.control.textfield.TextFields;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -41,13 +52,14 @@ public class appController implements Initializable {
     @FXML Button speakerButton = new Button();
     @FXML  Label label = new Label();
     @FXML Button deleteButton = new Button(), addButton = new Button();
+//    @FXML CheckBox cbbutton = new CheckBox();
 
     private static Synthesizer synthesizer;
     static Set<Synthesizer> loadedSynthesizers = new HashSet<>();
     WebEngine engine;
     private Image searchImage,speakerImage;
     ArrayList<String> possibleSearches;
-    public static String filepath = "C:\\Users\\OS\\Documents\\E_V.txt";
+    public static String filepath = ".\\E_V.txt";
     private String word="";
     public int index = -1;
 
@@ -199,7 +211,7 @@ public class appController implements Initializable {
             File fileDir = new File(filepath);
             br = new BufferedReader(new InputStreamReader(
                     new FileInputStream(fileDir), "UTF8"));
-            filepath = br.readLine();
+//            filepath = br.readLine();
             String s = br.readLine();
             while (s != null) {
                 Word word1 = new Word();
@@ -209,7 +221,6 @@ public class appController implements Initializable {
                 s = br.readLine();
                 DictionaryManagement.dictsize++;
             }
-            System.out.println(filepath);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -286,7 +297,7 @@ public class appController implements Initializable {
                    wordList.getItems().add(addWindowController.word_index, addWindowController.addedWord);
                    dict.dictionary.add(addWindowController.word_index, addWindowController.addedWord);
                    label.setText("Đã thêm "+ addWindowController.addedWord.getWord_target());
-                   possibleSearches.add(addWindowController.addedWord.getWord_target());
+                   possibleSearches.add(addWindowController.word_index,addWindowController.addedWord.getWord_target());
                    TextFields.bindAutoCompletion(search,possibleSearches );
                }
            }
@@ -336,8 +347,8 @@ public class appController implements Initializable {
     public  void writeFile(String filePath) throws IOException {
         FileOutputStream fo = new FileOutputStream(filePath,false);
         OutputStreamWriter streamWriter = new OutputStreamWriter(fo, StandardCharsets.UTF_8);
-        streamWriter.write(filepath);
-        streamWriter.write(System.getProperty("line.separator"));
+//        streamWriter.write(filepath);
+//        streamWriter.write(System.getProperty("line.separator"));
         for(Word word:wordList.getItems()){
             StringBuilder s = new StringBuilder();
             s.append(word.getWord_target()).append(word.getWord_explain());
@@ -347,5 +358,30 @@ public class appController implements Initializable {
         streamWriter.flush();
         fo.close();
     }
+
+//    public void clipboardSearching(){
+//        String[] oldTarget = {""};
+//        ClipboardData clip = ClipboardData.getInst();
+//        Timeline t = new Timeline(new KeyFrame(Duration.seconds(0.5), new EventHandler<ActionEvent>() {
+//
+//            @Override
+//            public void handle(ActionEvent event) {
+//                try{
+//                    String target = clip.getClipboardContents();
+//                    if(!target.equals(oldTarget[0])){
+//                        engine = webView.getEngine();
+//                        engine.loadContent(target);
+//                        System.out.println(searchWord(target));
+//                        oldTarget[0] = target;
+//                    }
+//                }catch (Exception exception){
+//                    exception.printStackTrace();
+//                }
+//            }
+//        }));
+//        t.setCycleCount(Animation.INDEFINITE);
+//        t.play();
+//    }
+
 
 }
